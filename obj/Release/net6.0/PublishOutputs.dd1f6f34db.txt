@@ -1,5 +1,0 @@
-E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\publish\changeExcel.exe
-E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\publish\changeExcel.dll
-E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\publish\changeExcel.deps.json
-E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\publish\changeExcel.runtimeconfig.json
-E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\publish\changeExcel.pdb
