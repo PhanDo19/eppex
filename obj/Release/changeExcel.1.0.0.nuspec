@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>changeExcel</id>
+    <version>1.0.0</version>
+    <authors>changeExcel</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net6.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\changeExcel.runtimeconfig.json" target="lib\net6.0\changeExcel.runtimeconfig.json" />
+    <file src="E:\Tu_Hoc\DI\changeExcel\bin\Release\net6.0\changeExcel.dll" target="lib\net6.0\changeExcel.dll" />
+  </files>
+</package>
