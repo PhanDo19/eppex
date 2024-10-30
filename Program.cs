@@ -1,10 +1,5 @@
-﻿
-using changeExcel;
-using DocumentFormat.OpenXml.Spreadsheet;
+﻿using changeExcel;
 using OfficeOpenXml;
-using OfficeOpenXml.Table;
-using System.Data;
-using System.Reflection;
 using System.Text;
 
 var currentDate = DateTime.Now;
@@ -57,11 +52,13 @@ Console.WriteLine("Em làm rồi nghỉ sớm nha");
 
 //OfficeOpenXml.LicenseException
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-var link = "E:\\zalo";
+var link = "C:\\Users\\dopt\\SETUP\\ePPlus\\eppex\\aceess\\";
 var name = "thang8.xlsx";
 var filePath = System.IO.Path.Combine(link, name);
 
-var data = ReadExcelFile(filePath, inputIdSheet);
+var excelReader = new ExcelReader(filePath, 2);
+var data = excelReader.ReadDataFromExcel();
+excelReader.PrintData(data);
 
 Console.ForegroundColor = ConsoleColor.White;
 Console.Write($"{Environment.NewLine}(:\t...Đợi tý sắp ra rồi... \t(:");
@@ -79,10 +76,6 @@ if (!string.IsNullOrEmpty(sheetName))
    sheetName = "Sheet1";
 }
 
-
-
-WriteExcelFile(filePath, data, sheetName);
-
 for (int i = 0; i < 100; i++)
 {
     Console.Write("\u2593");
@@ -90,106 +83,3 @@ for (int i = 0; i < 100; i++)
 }
 
 Console.ReadKey(true);
-
-void WriteExcelFile(string filePath, List<RootData> data, string sheetName)
-{
-    using (var package = new ExcelPackage())
-    {
-        var worksheet = package.Workbook.Worksheets.Add(sheetName);
-
-        for (int i = 0; i < data.Count; i++)
-        {
-            worksheet.Cells[i + 1, 1].Value = data[i];
-        }
-
-        File.WriteAllBytes(filePath, package.GetAsByteArray());
-    }
-}
-
-List<RootData> ReadExcelFile(string filePath, int inputIdSheet)
-{
-    var data = new List<RootData>();
-    inputIdSheet = 2;
-    try
-    {
-        using (var package = new ExcelPackage(new FileInfo(filePath)))
-        {
-            var worksheet = package.Workbook.Worksheets[inputIdSheet];
-            if (worksheet != null)
-            {
-                data = worksheet.ReadExcelToList<RootData>();
-            }
-        }
-        //using (ExcelPackage package = new ExcelPackage(file.InputStream))
-        //{
-        //    ExcelWorkbook workbook = package.Workbook;
-        //    if (workbook != null)
-        //    {
-        //        ExcelWorksheet worksheet = workbook.Worksheets.FirstOrDefault();
-        //        if (worksheet != null)
-        //        {
-        //            list = worksheet.ReadExcelToList<Users>();
-        //            //Your code
-        //        }
-        //    }
-        //}
-    }
-    catch (Exception ex)
-    {
-        //Save error log
-    }
-    return data;
-}
-
-public static class ReadExcel
-{
-    public static List<T> ReadExcelToList<T>(this ExcelWorksheet worksheet) where T : new()
-    {
-        List<T> collection = new List<T>();
-        try
-        {
-            DataTable dt = new DataTable();
-            foreach (var firstRowCell in new T().GetType().GetProperties().ToList())
-            {
-                //Add table colums with properties of T
-                dt.Columns.Add(firstRowCell.Name);
-            }
-            for (int rowNum = 2; rowNum <= worksheet.Dimension.End.Row; rowNum++)
-            {
-                var wsRow = worksheet.Cells[rowNum, 1, rowNum, worksheet.Dimension.End.Column];
-                DataRow row = dt.Rows.Add();
-                foreach (var cell in wsRow)
-                {
-                    row[cell.Start.Column - 1] = cell.Text;
-                }
-            }
-
-            //Get the colums of table
-            var columnNames = dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
-
-            //Get the properties of T
-            List<PropertyInfo> properties = new T().GetType().GetProperties().ToList();
-
-            collection = dt.AsEnumerable().Select(row =>
-            {
-                T item = Activator.CreateInstance<T>();
-                foreach (var pro in properties)
-                {
-                    if (columnNames.Contains(pro.Name) || columnNames.Contains(pro.Name.ToUpper()))
-                    {
-                        PropertyInfo pI = item.GetType().GetProperty(pro.Name);
-                        pro.SetValue(item, (row[pro.Name] == DBNull.Value) ? null : Convert.ChangeType(row[pro.Name], (Nullable.GetUnderlyingType(pI.PropertyType) == null) ? pI.PropertyType : Type.GetType(pI.PropertyType.GenericTypeArguments[0].FullName)));
-                    }
-                }
-                return item;
-            }).ToList();
-
-        }
-        catch (Exception ex)
-        {
-            //Save error log
-        }
-
-        return collection;
-    }
-}
