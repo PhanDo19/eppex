@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace changeExcel.Utils
 {
-    public class EPPlusExtension
+    static class EPPlusExtension
     {
         public static IEnumerable<T> ConvertSheetToObjects<T>(this ExcelWorksheet excelWorksheet) where T : new()
         {
@@ -70,7 +70,8 @@ namespace changeExcel.Utils
                         try
                         {
                             ExcelRange currentValue = excelWorksheet.Cells[row, col.Column];
-
+                            //print column name like A1, B1, C1
+                            Console.WriteLine(currentValue.Address);
                             if (currentValue.Value == null)
                             {
                                 if (col.Required)
@@ -87,8 +88,17 @@ namespace changeExcel.Utils
                             }
                             else if (col.Property.PropertyType == typeof(double))
                             {
-                                var value = currentValue.GetValue<double>();
-                                col.Property.SetValue(newObject, currentValue.GetValue<double>());
+                                var stringValue = currentValue.GetValue<string>();
+                                if (stringValue.Contains("%"))
+                                {
+                                    var numericValue = double.Parse(stringValue.TrimEnd('%'));
+                                    col.Property.SetValue(newObject, numericValue);
+                                }
+                                else
+                                {
+                                    var value = currentValue.GetValue<double>();
+                                    col.Property.SetValue(newObject, currentValue.GetValue<double>());
+                                }
                             }
                             else if (col.Property.PropertyType == typeof(DateTime))
                             {
