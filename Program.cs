@@ -1,4 +1,5 @@
 ﻿using changeExcel;
+using DocumentFormat.OpenXml.VariantTypes;
 using OfficeOpenXml;
 using System.Text;
 
@@ -52,12 +53,15 @@ Console.WriteLine("Em làm rồi nghỉ sớm nha");
 
 //OfficeOpenXml.LicenseException
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-var link = "C:\\Users\\dopt\\SETUP\\ePPlus\\eppex\\aceess\\";
+// link file is E:\GEM\ExcelCode\Eppp\eppex\aceess\thang8.xlsx
+var link = @"E:\GEM\ExcelCode\Eppp\eppex\aceess\";
 var name = "thang8.xlsx";
 var filePath = System.IO.Path.Combine(link, name);
 
 var excelReader = new ExcelReader(filePath, 2);
+
 var data = excelReader.ReadDataFromExcel();
+
 excelReader.PrintData(data);
 
 Console.ForegroundColor = ConsoleColor.White;

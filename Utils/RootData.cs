@@ -34,11 +34,11 @@
         [Column(11)]
         public bool TaxCheck { get; set; }
 
-        //lai gộp
-        [Column(12)]
-        public double GrossProfit { get; set; }
-        // tỷ lệ lãi
-        [Column(13)]
-        public double ProfitRate { get; set; }
+        ////lai gộp
+        //[Column(12)]
+        //public double GrossProfit { get; set; }
+        //// tỷ lệ lãi
+        //[Column(13)]
+        //public double ProfitRate { get; set; }
     }
 }

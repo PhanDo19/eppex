@@ -23,113 +23,146 @@ namespace changeExcel.Utils
                 .Select(x => x.Start.Row)
                 .Distinct()
                 .OrderBy(x => x);
-            //foreach(var row in rows.Skip(3))
-            //{
-            //       foreach (var col in columns)
-            //    {
-            //        var currentValue = excelWorksheet.Cells[row, col.Column];
-            //        if (currentValue.Value == null)
-            //        {
-            //            if (col.Required)
-            //            {
-            //                throw new Exception("required_data");
-            //            }
+            // IEnumerable<T> collection = rows.Skip(3)
+            //     .Select(row =>
+            //     {
+            //         var newObject = new T();
 
-            //            col.Property.SetValue(new T(), null);
-            //        }
-            //        else if (col.Property.PropertyType == typeof(Int32))
-            //        {
-            //            col.Property.SetValue(new T(), currentValue.GetValue<int>());
-            //        }
-            //        else if (col.Property.PropertyType == typeof(double))
-            //        {
-            //            col.Property.SetValue(new T(), currentValue.GetValue<double>());
-            //        }
-            //        else if (col.Property.PropertyType == typeof(DateTime))
-            //        {
-            //            col.Property.SetValue(new T(), currentValue.GetValue<DateTime>());
-            //        }
-            //        else if (col.Property.PropertyType == typeof(bool))
-            //        {
-            //            col.Property.SetValue(new T(), currentValue.GetValue<bool>());
-            //        }
-            //        else if (col.Property.PropertyType == typeof(string))
-            //        {
-            //            col.Property.SetValue(new T(), currentValue.GetValue<string>());
-            //        }
-            //    }
-            //}
+            //         columns.ForEach(col =>
+            //         {
+            //             try
+            //             {
+            //                 ExcelRange currentValue = excelWorksheet.Cells[row, col.Column];
+            //                 //print column name like A1, B1, C1
+            //                 Console.WriteLine(currentValue.Address);
+            //                 if (currentValue.Value == null)
+            //                 {
+            //                     // if condition is true, continue to next iteration
+            //                     if (col.Required)
+            //                     {
+            //                         throw new Exception("required_data");
+            //                     }
+            //                     col.Property.SetValue(newObject, null);
+            //                 }
+            //                 else if (col.Property.PropertyType == typeof(Int32))
+            //                 {
+            //                     var value = currentValue.GetValue<int>();
+            //                     col.Property.SetValue(newObject, value);
+            //                 }
+            //                 else if (col.Property.PropertyType == typeof(double))
+            //                 {
+            //                     var stringValue = currentValue.GetValue<string>();
+            //                     if (stringValue.Contains("%"))
+            //                     {
+            //                         var numericValue = double.Parse(stringValue.TrimEnd('%'));
+            //                         col.Property.SetValue(newObject, numericValue);
+            //                     }
+            //                     else
+            //                     {
+            //                         var value = currentValue.GetValue<double>();
+            //                         col.Property.SetValue(newObject, currentValue.GetValue<double>());
+            //                     }
+            //                 }
+            //                 else if (col.Property.PropertyType == typeof(DateTime))
+            //                 {
+            //                     var value = currentValue.GetValue<DateTime>();
+            //                     col.Property.SetValue(newObject, currentValue.GetValue<DateTime>());
+            //                 }
+            //                 else if (col.Property.PropertyType == typeof(bool))
+            //                 {
+            //                     var value = currentValue.GetValue<bool>();
+            //                     col.Property.SetValue(newObject, currentValue.GetValue<bool>());
+            //                 }
+            //                 else if (col.Property.PropertyType == typeof(string))
+            //                 {
+            //                     var value = currentValue.GetValue<string>();
+            //                     col.Property.SetValue(newObject, value);
+            //                 }
 
-            IEnumerable<T> collection = rows.Skip(3)
-                .Select(row =>
+            //             }
+            //             catch (Exception ex)
+            //             {
+            //                 if (ex.Message.Equals("required_data"))
+            //                 {
+            //                     throw new Exception("Null data error at row " + row + " column: " + col.Property.Name);
+            //                 }
+
+            //                 throw new Exception("Conversion error at row: " + row + " column: " + col.Property.Name);
+            //             }
+            //         });
+
+            //         return newObject;
+            //     });
+            // using foreach() instead of linq
+            var collection = new List<T>(); 
+            foreach (var row in rows.Skip(3))
+            {
+                var newObject = new T();
+                foreach (var col in columns)
                 {
-                    var newObject = new T();
-
-                    columns.ForEach(col =>
+                    try
                     {
-                        try
+                        ExcelRange currentValue = excelWorksheet.Cells[row, col.Column];
+                        //print column name like A1, B1, C1
+                        Console.WriteLine(currentValue.Address);
+                        if (currentValue.Value == null)
                         {
-                            ExcelRange currentValue = excelWorksheet.Cells[row, col.Column];
-                            //print column name like A1, B1, C1
-                            Console.WriteLine(currentValue.Address);
-                            if (currentValue.Value == null)
+                            // if condition is true, continue to next iteration
+                            if (col.Required)
                             {
-                                if (col.Required)
-                                {
-                                    throw new Exception("required_data");
-                                }
-
-                                col.Property.SetValue(newObject, null);
+                                throw new Exception("required_data");
                             }
-                            else if (col.Property.PropertyType == typeof(Int32))
+                            col.Property.SetValue(newObject, null);
+                        }
+                        else if (col.Property.PropertyType == typeof(Int32))
+                        {
+                            var value = currentValue.GetValue<int>();
+                            col.Property.SetValue(newObject, value);
+                        }
+                        else if (col.Property.PropertyType == typeof(double))
+                        {
+                            var stringValue = currentValue.GetValue<string>();
+                            if (stringValue.Contains("%"))
                             {
-                                var value = currentValue.GetValue<int>();
-                                col.Property.SetValue(newObject, value);
+                                var numericValue = double.Parse(stringValue.TrimEnd('%'));
+                                col.Property.SetValue(newObject, numericValue);
                             }
-                            else if (col.Property.PropertyType == typeof(double))
+                            else
                             {
-                                var stringValue = currentValue.GetValue<string>();
-                                if (stringValue.Contains("%"))
-                                {
-                                    var numericValue = double.Parse(stringValue.TrimEnd('%'));
-                                    col.Property.SetValue(newObject, numericValue);
-                                }
-                                else
-                                {
-                                    var value = currentValue.GetValue<double>();
-                                    col.Property.SetValue(newObject, currentValue.GetValue<double>());
-                                }
-                            }
-                            else if (col.Property.PropertyType == typeof(DateTime))
-                            {
-                                var value = currentValue.GetValue<DateTime>();
-                                col.Property.SetValue(newObject, currentValue.GetValue<DateTime>());
-                            }
-                            else if (col.Property.PropertyType == typeof(bool))
-                            {
-                                var value = currentValue.GetValue<bool>();
-                                col.Property.SetValue(newObject, currentValue.GetValue<bool>());
-                            }
-                            else if (col.Property.PropertyType == typeof(string))
-                            {
-                                var value = currentValue.GetValue<string>();
-                                col.Property.SetValue(newObject, value);
+                                var value = currentValue.GetValue<double>();
+                                col.Property.SetValue(newObject, currentValue.GetValue<double>());
                             }
                         }
-                        catch (Exception ex)
+                        else if (col.Property.PropertyType == typeof(DateTime))
                         {
-                            if (ex.Message.Equals("required_data"))
-                            {
-                                throw new Exception("Null data error at row " + row + " column: " + col.Property.Name);
-                            }
-
-                            throw new Exception("Conversion error at row: " + row + " column: " + col.Property.Name);
+                            var value = currentValue.GetValue<DateTime>();
+                            col.Property.SetValue(newObject, currentValue.GetValue<DateTime>());
                         }
-                    });
+                        else if (col.Property.PropertyType == typeof(bool))
+                        {
+                            var value = currentValue.GetValue<bool>();
+                            col.Property.SetValue(newObject, currentValue.GetValue<bool>());
+                        }
+                        else if (col.Property.PropertyType == typeof(string))
+                        {
+                            var value = currentValue.GetValue<string>();
+                            col.Property.SetValue(newObject, value);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.Message.Equals("required_data"))
+                        {
+                            throw new Exception("Null data error at row " + row + " column: " + col.Property.Name);
+                        }
 
-                    return newObject;
-                });
-
+                        throw new Exception("Conversion error at row: " + row + " column: " + col.Property.Name);
+                    }
+                }
+                // value has property name is Name null or empty continue to next iteration
+                if (string.IsNullOrEmpty(newObject.GetType().GetProperty("Name").GetValue(newObject).ToString())) continue;
+                collection.Add(newObject);
+            } 
             return collection;
         }
     }

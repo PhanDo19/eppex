@@ -57,8 +57,6 @@ namespace changeExcel
                     Console.WriteLine($"TaxRate: {item.TaxRate}");
                     Console.WriteLine($"PriceCheck: {item.PriceCheck}");
                     Console.WriteLine($"TaxCheck: {item.TaxCheck}");
-                    Console.WriteLine($"GrossProfit: {item.GrossProfit}");
-                    Console.WriteLine($"ProfitRate: {item.ProfitRate}");
                     Console.WriteLine();
                 }
             }
