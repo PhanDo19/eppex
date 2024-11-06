@@ -1,7 +1,7 @@
 ﻿using changeExcel.Utils;
 using OfficeOpenXml;
 
-namespace changeExcel
+namespace changeExcel.Handler
 {
     public class ExcelReader
     {
@@ -14,7 +14,7 @@ namespace changeExcel
             SheetIndex = sheetIndex;
         }
 
-        public List<RootData> ReadDataFromExcel()
+        public List<Product> ReadDataFromExcel()
         {
             try
             {
@@ -26,7 +26,7 @@ namespace changeExcel
                     {
                         ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[SheetIndex];
 
-                        return excelWorksheet.ConvertSheetToObjects<RootData>().ToList();
+                        return excelWorksheet.ConvertSheetToObjects<Product>().ToList();
                     }
                 }
 
@@ -42,7 +42,7 @@ namespace changeExcel
             }
         }
 
-        public void PrintData(List<RootData> data)
+        public void PrintData(List<Product> data)
         {
             if (data != null)
             {
@@ -60,6 +60,6 @@ namespace changeExcel
                     Console.WriteLine();
                 }
             }
-        }   
+        }
     }
 }

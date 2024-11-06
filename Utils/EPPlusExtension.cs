@@ -119,18 +119,18 @@ namespace changeExcel.Utils
                             var value = currentValue.GetValue<int>();
                             col.Property.SetValue(newObject, value);
                         }
-                        else if (col.Property.PropertyType == typeof(double))
+                        else if (col.Property.PropertyType == typeof(decimal))
                         {
                             var stringValue = currentValue.GetValue<string>();
                             if (stringValue.Contains("%"))
                             {
-                                var numericValue = double.Parse(stringValue.TrimEnd('%'));
+                                var numericValue = decimal.Parse(stringValue.TrimEnd('%'));
                                 col.Property.SetValue(newObject, numericValue);
                             }
                             else
                             {
-                                var value = currentValue.GetValue<double>();
-                                col.Property.SetValue(newObject, currentValue.GetValue<double>());
+                                var value = currentValue.GetValue<decimal>();
+                                col.Property.SetValue(newObject, currentValue.GetValue<decimal>());
                             }
                         }
                         else if (col.Property.PropertyType == typeof(DateTime))

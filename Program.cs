@@ -1,4 +1,5 @@
 ﻿using changeExcel;
+using changeExcel.Handler;
 using DocumentFormat.OpenXml.VariantTypes;
 using OfficeOpenXml;
 using System.Text;
@@ -62,28 +63,44 @@ var excelReader = new ExcelReader(filePath, 2);
 
 var data = excelReader.ReadDataFromExcel();
 
-excelReader.PrintData(data);
-
-Console.ForegroundColor = ConsoleColor.White;
-Console.Write($"{Environment.NewLine}(:\t...Đợi tý sắp ra rồi... \t(:");
-Console.ForegroundColor = ConsoleColor.Green;
-Console.WriteLine("\n Đang chạy dữ liệu rồi nha \n");
-
-
-//write data to file
-Console.WriteLine("Nhập tên sheet mới đi em ");
-//string sheetName = Console.ReadLine();
-string sheetName = "ok";
-if (!string.IsNullOrEmpty(sheetName))
+if (data != null)
 {
-   Console.WriteLine("không nhập tên, tạm thời để Sheet1 nha");
-   sheetName = "Sheet1";
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.Write($"{Environment.NewLine}(:\t...Đợi tý sắp ra rồi... \t(:");
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("Dữ liệu đã được đọc từ file excel. Bây h nhập số tiền mong đợi trong tháng, tháng và năm");
+    Console.WriteLine("/n ---------- Tổng tiền ------------");
+    var total = Convert.ToDecimal(Console.ReadLine());
+    Console.WriteLine("/n ---------- Tháng ------------");
+    var month = Convert.ToInt32(Console.ReadLine());
+    Console.WriteLine("/n ---------- Năm ------------");
+    var year = Convert.ToInt32(Console.ReadLine());
+
+    var invoices = new InvoiceHandler().CreateRandomInvoices(data, total == 0? Convert.ToDecimal("10000000"): total,
+        1<= month && month>= 12? month: DateTime.Now.Month,
+        year == 0? DateTime.Now.Year: year);
+
+    //write data to file
+    Console.WriteLine("Nhập tên sheet mới đi em ");
+    string sheetName = Console.ReadLine();
+    if (!string.IsNullOrEmpty(sheetName))
+    {
+        Console.WriteLine("không nhập tên, tạm thời để Sheet1 nha");
+        sheetName = "Sheet1";
+    }
+    for (int i = 0; i < 100; i++)
+    {
+        Console.Write("\u2593<3");
+        Thread.Sleep(50);
+    }
+
+    new InvoiceHandler().SaveInvoicesToExcel(invoices, filePath, sheetName);
+}
+else
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("Không có dữ liệu nào được đọc từ file excel");
 }
 
-for (int i = 0; i < 100; i++)
-{
-    Console.Write("\u2593");
-    Thread.Sleep(50);
-}
 
 Console.ReadKey(true);

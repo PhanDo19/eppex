@@ -1,6 +1,20 @@
 ﻿namespace changeExcel.Utils
 {
-    public class RootData
+
+    public class Invoice
+    {
+        public List<InvoiceItem> Items { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string InvoiceNumber { get; set; }
+        public string InvoiceDate { get; set; }
+    }
+
+    public class InvoiceItem
+    {
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
+    }
+    public class Product
     {
         [Column(1, true)]
         public string Code { get; set; }
@@ -12,33 +26,33 @@
         public int Quantity { get; set; }
 
         [Column(5)]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         // Giá trị
         [Column(6)]
-        public double Value { get; set; }
+        public decimal Value { get; set; }
 
         //mặt hàng
         [Column(7)]
         public string Item { get; set; }
 
         [Column(8)]
-        public double SalePrice { get; set; }
+        public decimal SalePrice { get; set; }
         //thuế suất
         [Column(9)]
-        public double TaxRate { get; set; }
+        public decimal TaxRate { get; set; }
         //đơn giá check
         [Column(10)]
-        public double PriceCheck { get; set; }
+        public decimal PriceCheck { get; set; }
         // thuế check 
         [Column(11)]
         public bool TaxCheck { get; set; }
 
         ////lai gộp
         //[Column(12)]
-        //public double GrossProfit { get; set; }
+        //public decimal GrossProfit { get; set; }
         //// tỷ lệ lãi
         //[Column(13)]
-        //public double ProfitRate { get; set; }
+        //public decimal ProfitRate { get; set; }
     }
 }
