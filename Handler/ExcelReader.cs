@@ -36,8 +36,7 @@ namespace changeExcel.Handler
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("+++++ ERROR - Hiba!" + $" Hiba az Excel beolvasása közben!\n\nException Message {ex.Message}");
-
+                System.Diagnostics.Debug.WriteLine("+++++ ERROR - Hiba!" + $" Lỗi code \n\nException Message {ex.Message}");
                 return null;
             }
         }

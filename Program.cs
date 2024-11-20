@@ -1,6 +1,5 @@
-﻿using changeExcel;
-using changeExcel.Handler;
-using DocumentFormat.OpenXml.VariantTypes;
+﻿using changeExcel.Handler;
+using DocumentFormat.OpenXml.Vml;
 using OfficeOpenXml;
 using System.Text;
 
@@ -8,7 +7,7 @@ var currentDate = DateTime.Now;
 string path = string.Empty;
 string fileName = string.Empty;
 int inputIdSheet = 0;
-// Thiết lập mã hóa UTF-8 cho console
+var invcHandler = new InvoiceHandler();
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
 
@@ -62,25 +61,32 @@ var filePath = System.IO.Path.Combine(link, name);
 var excelReader = new ExcelReader(filePath, 2);
 
 var data = excelReader.ReadDataFromExcel();
+var totalValue = data.Sum(x => x.Value * x.Quantity);
 
 if (data != null)
 {
     Console.ForegroundColor = ConsoleColor.White;
     Console.Write($"{Environment.NewLine}(:\t...Đợi tý sắp ra rồi... \t(:");
     Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("Dữ liệu đã được đọc từ file excel. Bây h nhập số tiền mong đợi trong tháng, tháng và năm");
-    Console.WriteLine("/n ---------- Tổng tiền ------------");
+    Console.WriteLine("\n Dữ liệu đã được đọc từ file excel.\n Bây h nhập số tiền mong đợi trong tháng, tháng và năm");
+    Console.WriteLine("\n ---------- Tổng tiền ------------");
     var total = Convert.ToDecimal(Console.ReadLine());
-    Console.WriteLine("/n ---------- Tháng ------------");
+
+    while (totalValue < total) {
+
+        Console.WriteLine("\n ---------- Nhập lại tổng tiền ------------");
+        total = Convert.ToDecimal(Console.ReadLine());
+    }
+ 
+    Console.WriteLine("\n ---------- Tháng ------------");
     var month = Convert.ToInt32(Console.ReadLine());
-    Console.WriteLine("/n ---------- Năm ------------");
+    Console.WriteLine("\n ---------- Năm ------------");
     var year = Convert.ToInt32(Console.ReadLine());
 
-    var invoices = new InvoiceHandler().CreateRandomInvoices(data, total == 0? Convert.ToDecimal("10000000"): total,
-        1<= month && month>= 12? month: DateTime.Now.Month,
-        year == 0? DateTime.Now.Year: year);
 
-    //write data to file
+    var invoices = invcHandler.CreateRandomInvoices(data, total == 0? Convert.ToDecimal("10000000"): total,
+        1<= month && month>= 12? month: DateTime.Now.Month, year == 0? DateTime.Now.Year: year);
+
     Console.WriteLine("Nhập tên sheet mới đi em ");
     string sheetName = Console.ReadLine();
     if (!string.IsNullOrEmpty(sheetName))
@@ -94,7 +100,7 @@ if (data != null)
         Thread.Sleep(50);
     }
 
-    new InvoiceHandler().SaveInvoicesToExcel(invoices, filePath, sheetName);
+    invcHandler.SaveInvoicesToExcel(invoices, filePath, sheetName);
 }
 else
 {

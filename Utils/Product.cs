@@ -48,11 +48,5 @@
         [Column(11)]
         public bool TaxCheck { get; set; }
 
-        ////lai gộp
-        //[Column(12)]
-        //public decimal GrossProfit { get; set; }
-        //// tỷ lệ lãi
-        //[Column(13)]
-        //public decimal ProfitRate { get; set; }
     }
 }

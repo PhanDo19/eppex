@@ -11,13 +11,14 @@ namespace changeExcel.Handler
             decimal remainingAmount = totalAmount;
             Random random = new Random();
             DateTime currentDate = new DateTime(year, month, 1);
-
+            // areadly exist remainingAmount = 0 for break loop
             while (remainingAmount > 0)
             {
                 Invoice invoice = new Invoice
                 {
                     InvoiceNumber = "BH" + random.Next(10000, 100000).ToString("D5"),
                     InvoiceDate = currentDate.AddDays(random.Next(0, DateTime.DaysInMonth(currentDate.Year, currentDate.Month))).ToString("MM/dd/yyyy"),
+                    Items = new List<InvoiceItem>(),
                     TotalAmount = 0
                 };
 
@@ -30,14 +31,26 @@ namespace changeExcel.Handler
                         Product = products[random.Next(0, products.Count)],
                         Quantity = random.Next(1, 3) // Số lượng từ 1 đến 2
                     };
-                    invoice.Items.Add(item);
+                    //check null before add
+                    if (item.Product != null && invoice != null)
+                    {   
+                        invoice.Items.Add(item);
+                    }
                     invoiceTotal += item.Product.Price * item.Quantity;
                 }
 
                 if (invoiceTotal <= remainingAmount)
                 {
                     invoice.TotalAmount = invoiceTotal;
-                    remainingAmount -= invoiceTotal;
+                    
+                    remainingAmount = remainingAmount - invoiceTotal;
+                    //If the remaining amount <0 then call the function again and find the invoice with the amount closest to the remaining amount.
+                    if (remainingAmount < 0)
+                    {
+                        invoices.Add(invoice);
+                        Console.WriteLine("Kiểm tra lại hóa đơn cuối cùng do só tiền lớn hơn đầu vào");
+                        break;
+                    }
                     invoices.Add(invoice);
                 }
             }
