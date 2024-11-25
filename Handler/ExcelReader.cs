@@ -22,12 +22,10 @@ namespace changeExcel.Handler
 
                 if (existingFileInfo.Exists)
                 {
-                    using (ExcelPackage excelPackage = new ExcelPackage(existingFileInfo))
-                    {
-                        ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[SheetIndex];
+                    using ExcelPackage excelPackage = new ExcelPackage(existingFileInfo);
+                    ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets[SheetIndex];
 
-                        return excelWorksheet.ConvertSheetToObjects<Product>().ToList();
-                    }
+                    return excelWorksheet.ConvertSheetToObjects<Product>().ToList();
                 }
 
                 Console.WriteLine("\n\nLoad fail");
