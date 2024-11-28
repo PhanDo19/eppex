@@ -13,52 +13,49 @@ Console.InputEncoding = Encoding.UTF8;
 
 Console.ForegroundColor = ConsoleColor.Magenta;
 Console.WriteLine($"{Environment.NewLine}Hello Oanh Hoàng <3, bây giờ là {currentDate:d} - {currentDate:t}!");
-Console.WriteLine("Em làm rồi nghỉ sớm nha");
+//Console.WriteLine("Em làm rồi nghỉ sớm nha");
 
-//while (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(fileName))
-//{
-//    Console.ForegroundColor = ConsoleColor.Blue;
-//    Console.WriteLine("Nhập thư mục chứa file, ví dụ E:\\zalo ");
-//    path = Console.ReadLine();
-//    Console.WriteLine("Nhập tên file");
-//    fileName = Console.ReadLine();
-//    Console.WriteLine("Nhập id sheet dùng để lấy data tình từ sheet 0");
-//    inputIdSheet = Convert.ToInt32(Console.ReadLine());
+while (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(fileName))
+{
+    Console.ForegroundColor = ConsoleColor.Blue;
+    Console.WriteLine("Nhập thư mục chứa file, ví dụ E:\\zalo ");
+    path = Console.ReadLine();
+    Console.WriteLine("Nhập tên file");
+    fileName = Console.ReadLine();
+    Console.WriteLine("Nhập id sheet dùng để lấy data tình từ sheet 0");
+    inputIdSheet = Convert.ToInt32(Console.ReadLine());
 
-//    if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(fileName))
-//    {
-//        Console.ForegroundColor = ConsoleColor.Red;
-//        Console.WriteLine("Thiếu tên hoặc đường dẫn (:");
-//    }
+    if (string.IsNullOrEmpty(path) && string.IsNullOrEmpty(fileName))
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Thiếu tên hoặc đường dẫn (:");
+    }
 
-//    if (inputIdSheet < 0)
-//    {
-//        Console.ForegroundColor = ConsoleColor.Red;
-//        Console.WriteLine("Id sheet không hợp lệ, vui lòng nhập lại");
-//    }
+    if (inputIdSheet < 0)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Id sheet không hợp lệ, vui lòng nhập lại");
+    }
 
-//    //check format file
-//    if (!fileName.EndsWith(".xlsx"))
-//    {
-//        Console.ForegroundColor = ConsoleColor.Red;
-//        Console.WriteLine("File không đúng định dạng, vui lòng nhập lại");
-//    }
-//    // check file exist
-//    if (!File.Exists(System.IO.Path.Combine(path, fileName)))
-//    {
-//        Console.ForegroundColor = ConsoleColor.Red;
-//        Console.WriteLine("File không tồn tại, vui lòng nhập lại");
-//    }
-//}
+    //check format file
+    if (!fileName.EndsWith(".xlsx"))
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("File không đúng định dạng, vui lòng nhập lại");
+    }
+    // check file exist
+    if (!File.Exists(System.IO.Path.Combine(path, fileName)))
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("File không tồn tại, vui lòng nhập lại");
+    }
+}
 
 //OfficeOpenXml.LicenseException
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-// link file is E:\GEM\ExcelCode\Eppp\eppex\aceess\thang8.xlsx
-var link = @"E:\GEM\ExcelCode\Eppp\eppex\aceess\";
-var name = "thang8.xlsx";
-var filePath = System.IO.Path.Combine(link, name);
+var filePath = System.IO.Path.Combine(path, fileName);
 
-var excelReader = new ExcelReader(filePath, 2);
+var excelReader = new ExcelReader(filePath, inputIdSheet);
 
 var data = excelReader.ReadDataFromExcel();
 var totalValue = data.Sum(x => x.Value * x.Quantity);
@@ -89,14 +86,14 @@ if (data != null)
 
     Console.WriteLine("Nhập tên sheet mới đi em ");
     string sheetName = Console.ReadLine();
-    if (!string.IsNullOrEmpty(sheetName))
+    if (string.IsNullOrEmpty(sheetName))
     {
         Console.WriteLine("không nhập tên, tạm thời để Sheet1 nha");
         sheetName = "Sheet1";
     }
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 30; i++)
     {
-        Console.Write("\u2593<3");
+        Console.Write("\u2593");
         Thread.Sleep(50);
     }
 
@@ -109,4 +106,5 @@ else
 }
 
 
+Console.WriteLine("Nhập bất kỳ để đóng");
 Console.ReadKey(true);

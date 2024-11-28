@@ -46,7 +46,7 @@
         public decimal PriceCheck { get; set; }
         // thuế check 
         [Column(11)]
-        public bool TaxCheck { get; set; }
+        public decimal TaxCheck { get; set; }
 
     }
 }

@@ -10,14 +10,15 @@ namespace changeExcel.Handler
         {
             List<Invoice> invoices = new List<Invoice>();
             decimal remainingAmount = 0;
-            var rangeFrom = totalAmount - 5000000;
-            var rangeTo = totalAmount + 5000000;
+            var rangeFrom = totalAmount - 2000000;
+            var rangeTo = totalAmount + 2000000;
             Random random = new Random();
             DateTime currentDate = new DateTime(year, month, 1);
             // loop while reaminingAmount in range from totalAmount - 5,000,000 to totalAmount + 5,000,000
-            while( remainingAmount >= rangeTo)
+            while(remainingAmount > rangeTo || remainingAmount < rangeFrom)
             {
-                Console.WriteLine($"TotalPrice - {remainingAmount}");
+                products = products.Where(p => p.Quantity > 0).ToList();
+                //Console.WriteLine($"TotalPrice - {remainingAmount}");
                 Invoice invoice = new Invoice
                 {
                     InvoiceNumber = "BH" + month.ToString() + random.Next(0, 500).ToString("D3"),
@@ -43,11 +44,9 @@ namespace changeExcel.Handler
                         Quantity = GetQuantity(product.Quantity)
                     };
                     //check null before add
-                    if (item.Product != null && invoice != null)
-                    {   
-                        invoice.Items.Add(item);
-                        product.Quantity -= item.Quantity;
-                    }
+                    if (item.Product == null && invoice == null) continue;
+                    invoice.Items.Add(item);
+                    product.Quantity -= item.Quantity;
                     invoiceTotal += item.Product.Price * item.Quantity;
                 }
 
@@ -60,6 +59,7 @@ namespace changeExcel.Handler
                     invoices.Add(invoice);
                 }
             }
+            var chec = invoices.Sum(x => x.TotalAmount);
 
             return invoices;
         }
@@ -88,24 +88,6 @@ namespace changeExcel.Handler
                     worksheet.Cells["H1"].Value = "ThueSuat";
                     worksheet.Cells["I1"].Value = "TienThueGTGT";
                     worksheet.Cells["J1"].Value = "NgayThangNamHD";
-                    worksheet.Cells["K1"].Value = "HoTenNguoiMua";
-                    worksheet.Cells["L1"].Value = "TenDonVi";
-                    worksheet.Cells["M1"].Value = "MaSoThue";
-                    worksheet.Cells["N1"].Value = "DiaChi";
-                    worksheet.Cells["O1"].Value = "SoTaiKhoan";
-                    worksheet.Cells["P1"].Value = "HinhThucTT";
-                    worksheet.Cells["Q1"].Value = "NhanBangEmail";
-                    worksheet.Cells["R1"].Value = "DSEmail";
-                    worksheet.Cells["S1"].Value = "NhanBangSMS";
-                    worksheet.Cells["T1"].Value = "DSSMS";
-                    worksheet.Cells["U1"].Value = "NhanBangBanIN";
-                    worksheet.Cells["V1"].Value = "HoTenNguoiNhan";
-                    worksheet.Cells["W1"].Value = "SoDienThoaiNguoiNhan";
-                    worksheet.Cells["X1"].Value = "SoNha";
-                    worksheet.Cells["Y1"].Value = "Tinh/ThanhPho";
-                    worksheet.Cells["Z1"].Value = "Huyen/Quan/ThiXa";
-                    worksheet.Cells["AA1"].Value = "Xa/Phuong/ThiTran";
-                    worksheet.Cells["AB1"].Value = "GhiChu";
                     
                     // Write data to Excel file
                     int row = 2;
@@ -124,16 +106,31 @@ namespace changeExcel.Handler
                             worksheet.Cells[$"H{row}"].Value = item.Product.TaxRate;
                             worksheet.Cells[$"I{row}"].Value = item.Product.Price * item.Quantity * item.Product.TaxRate / 100;
                             worksheet.Cells[$"J{row}"].Value = invoice.InvoiceDate;
-                            worksheet.Cells[$"K{row}"].Value = "Người mua không lấy hóa đơn";
-                            worksheet.Cells[$"P{row}"].Value = "TM/CK";
+                            row++;
                         }
                     }
 
                     // Điều chỉnh độ rộng cột
-                    worksheet.Cells.AutoFitColumns();   
-
+                    worksheet.Cells.AutoFitColumns();
+                    //sort column J ignore header
+                    worksheet.Cells[$"J2:J{row}"].Sort();
                     // Lưu file Excel
-                    excelPackage.SaveAs(existingFileInfo);
+
+                    try
+                    {
+                        excelPackage.SaveAs(existingFileInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        // if file is opened, close it and save again
+                        //close file
+                        excelPackage.Dispose();
+                        //save file
+                        excelPackage.SaveAs(existingFileInfo);
+                    }
+                   
+
+                    Console.WriteLine("\n Đã xong kiểm tra lại file");
                 }
             }
         }
@@ -143,7 +140,7 @@ namespace changeExcel.Handler
             if(quantity == 1 || quantity == 2)
                 return quantity;
             if ( quantity > 2 && quantity < 10)
-                return new Random().Next(2, 5);
+                return new Random().Next(3, 8);
             if (quantity >= 10)
                 return new Random().Next(7, 15);
             return 0;

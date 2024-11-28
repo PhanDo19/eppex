@@ -24,6 +24,7 @@ namespace changeExcel.Utils
                 .OrderBy(x => x);
 
             var collection = new List<T>();
+             var code = string.Empty;
             foreach (var row in rows.Skip(3))
             {
                 var newObject = new T();
@@ -32,6 +33,7 @@ namespace changeExcel.Utils
                     try
                     {
                         ExcelRange currentValue = excelWorksheet.Cells[row, col.Column];
+                       
                         if (currentValue.Value == null)
                         {
                             // if condition is true, continue to next iteration
@@ -74,16 +76,20 @@ namespace changeExcel.Utils
                         {
                             var value = currentValue.GetValue<string>();
                             col.Property.SetValue(newObject, value);
+                            if (col.Required)
+                            {
+                               code = value;
+                            }
                         }
                     }
                     catch (Exception ex)
                     {
                         if (ex.Message.Equals("required_data"))
                         {
-                            throw new Exception("Null data error at row " + row + " column: " + col.Property.Name);
+                            throw new Exception("Lỗi đơn sản phẩm : " + code + " column: " + col.Property.Name);
                         }
 
-                        throw new Exception("Conversion error at row: " + row + " column: " + col.Property.Name);
+                        throw new Exception("Lỗi đơn sản phẩm : " + code + " column: " + col.Property.Name);
                     }
                 }
                 // value has property name is Name null or empty continue to next iteration
